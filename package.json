@@ -1,0 +1,12 @@
+{
+  "name": "bookshelf",
+  "version": "1.0.0",
+  "description": "Submission for dicoding's Belajar Membuat Aplikasi Back-End untuk Pemula course",
+  "main": "index.js",
+  "repository": "https://github.com/ardafirdausr/dicoding-BMABEUP-bookshelf",
+  "author": "Arda Firdaus Ramadhan <ardafirdausr@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/hapi": "^20.1.3"
+  }
+}
