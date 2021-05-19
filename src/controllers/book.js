@@ -65,8 +65,48 @@ const createBook = {
   },
 };
 
+const updateBook = {
+  method: 'PUT',
+  path: '/books/{bookId}',
+  options: {
+    validate: {
+      payload: Book.Schema.tailor('update'),
+      failAction: (_request, h, err) => {
+        const firstError = err.details[0].message.replace(/['"]+/g, '');
+        const payload = {
+          status: 'fail',
+          message: `Gagal memperbarui buku. ${firstError}`,
+        };
+        return h.response(payload)
+          .code(400)
+          .takeover();
+      },
+    },
+  },
+  handler: (request, h) => {
+    const { bookId } = request.params;
+    const data = request.payload;
+    let book = Book.find(bookId);
+    if (!book) {
+      const payload = {
+        status: 'fail',
+        message: 'Gagal memperbarui buku. Id tidak ditemukan',
+      };
+      return h.response(payload).code(404);
+    }
+
+    book = Book.updateById(bookId, data);
+    const payload = {
+      status: 'success',
+      message: 'Buku berhasil diperbarui',
+    };
+    return h.response(payload).code(200);
+  },
+};
+
 module.exports = [
   getAllBooks,
   findBook,
   createBook,
+  updateBook,
 ];

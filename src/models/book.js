@@ -98,9 +98,22 @@ const create = (createBookParam) => {
   return book;
 };
 
+const updateById = (bookId, updateBookParam) => {
+  const book = {
+    ...updateBookParam,
+    finished: updateBookParam.readPage === updateBookParam.pageCount,
+    updatedAt: new Date().toISOString(),
+  };
+  return JSONDB.get('books')
+    .find({ id: bookId })
+    .assign(book)
+    .write();
+};
+
 module.exports = {
   Schema,
   getAll,
   find,
   create,
+  updateById,
 };
