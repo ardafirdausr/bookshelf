@@ -1,24 +1,37 @@
-const books = [
-  {
-    id: 'Qbax5Oy7L8WKf74l',
-    name: 'Buku A',
-    year: 2010,
-    author: 'John Doe',
-    summary: 'Lorem ipsum dolor sit amet',
-    publisher: 'Dicoding Indonesia',
-    pageCount: 100,
-    readPage: 25,
-    finished: false,
-    reading: false,
-    insertedAt: '2021-03-04T09:11:44.598Z',
-    updatedAt: '2021-03-04T09:11:44.598Z',
-  },
-];
+const NanoID = require('nanoid');
+const Joi = require('joi');
 
-function all() {
-  return [...books];
-}
+const JSONDB = require('../database/json');
+
+const createBookParam = Joi.object({
+  name: Joi.string().required(),
+  year: Joi.number().required(),
+  author: Joi.string().required(),
+  summary: Joi.string().required(),
+  publisher: Joi.string().required(),
+  pageCount: Joi.number().required(),
+  readPage: Joi.number().default(1),
+  reading: Joi.boolean().default(false),
+});
+
+const getAll = () => JSONDB.read('books');
+
+const create = (param) => {
+  const book = {
+    ...param,
+    id: NanoID.nanoid(),
+    finished: param.readPage === param.pageCount,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  JSONDB.get('books')
+    .push(book)
+    .write();
+  return book;
+};
 
 module.exports = {
-  all,
+  createBookParam,
+  getAll,
+  create,
 };

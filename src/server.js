@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 const Hapi = require('@hapi/hapi');
-const appConfig = require('../config/app');
+const appConfig = require('./config/app');
 const initAPIRoutes = require('./routes');
 
 const init = async () => {

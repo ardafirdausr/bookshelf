@@ -1,4 +1,4 @@
-const bookController = require('./controllers/book')
+const bookController = require('./controllers/book');
 
 function initAPIRoutes(server) {
   server.route(bookController);
