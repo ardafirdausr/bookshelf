@@ -7,6 +7,9 @@ const init = async () => {
   const server = Hapi.server({
     host: appConfig.host,
     port: appConfig.port,
+    routes: {
+      cors: { origin: ['*'] },
+    },
   });
 
   registerBookRoutes(server);
