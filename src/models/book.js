@@ -6,8 +6,9 @@ const JSONDB = require('../database/json');
 const Schema = Joi.object({
   name: Joi.string()
     .alter({
+      search: (schema) => schema.optional(),
       create: (schema) => schema.required(),
-      update: (schema) => schema.optional(),
+      update: (schema) => schema.required(),
     })
     .messages({
       'any.required': 'Mohon isi nama buku',
@@ -62,17 +63,43 @@ const Schema = Joi.object({
       'any.required': 'Mohon isi halaman yang sedang dibaca',
       'number.max': 'readPage tidak boleh lebih besar dari pageCount',
     }),
-  reading: Joi.boolean()
+  reading: Joi.boolean().truthy(1, '1').falsy(0, '0')
     .alter({
+      search: (schema) => schema.optional(),
       create: (schema) => schema.required(),
       update: (schema) => schema.optional(),
     })
     .messages({
       'any.required': 'Mohon isi status baca buku',
     }),
+  finished: Joi.boolean().truthy(1, '1').falsy(0, '0')
+    .alter({
+      search: (schema) => schema.optional(),
+      create: (schema) => schema.forbidden(),
+      update: (schema) => schema.forbidden(),
+    })
+    .messages({
+      'any.forbidden': 'Tidak boleh mengisi field ini',
+    }),
 });
 
-const getAll = () => JSONDB.get('books')
+const getAll = (filters) => JSONDB.get('books')
+  .filter((book) => {
+    let isMatch = true;
+    if (filters.name !== undefined) {
+      const pattern = new RegExp(`.*${filters.name}.*`, 'i');
+      isMatch = isMatch && pattern.test(book.name);
+    }
+
+    if (filters.reading !== undefined) {
+      isMatch = isMatch && (book.reading === filters.reading);
+    }
+
+    if (filters.finished !== undefined) {
+      isMatch = isMatch && (book.finished === filters.finished);
+    }
+    return isMatch;
+  })
   .map((book) => ({
     id: book.id,
     name: book.name,
@@ -89,7 +116,7 @@ const create = (createBookParam) => {
     ...createBookParam,
     id: NanoID.nanoid(),
     finished: createBookParam.readPage === createBookParam.pageCount,
-    createdAt: new Date().toISOString(),
+    insertedAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
   JSONDB.get('books')

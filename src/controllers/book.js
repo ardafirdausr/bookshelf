@@ -3,8 +3,14 @@ const Book = require('../models/book');
 const getAllBooks = {
   method: 'GET',
   path: '/books',
-  handler: (_request, h) => {
-    const books = Book.getAll();
+  options: {
+    validate: {
+      query: Book.Schema.tailor('search'),
+    },
+  },
+  handler: (request, h) => {
+    const filters = request.query;
+    const books = Book.getAll(filters);
     const payload = {
       status: 'success',
       data: { books },
@@ -99,6 +105,7 @@ const updateBook = {
     const payload = {
       status: 'success',
       message: 'Buku berhasil diperbarui',
+      data: { book },
     };
     return h.response(payload).code(200);
   },
