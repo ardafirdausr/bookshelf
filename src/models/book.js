@@ -4,17 +4,52 @@ const Joi = require('joi');
 const JSONDB = require('../database/json');
 
 const createBookParam = Joi.object({
-  name: Joi.string().required(),
-  year: Joi.number().required(),
-  author: Joi.string().required(),
-  summary: Joi.string().required(),
-  publisher: Joi.string().required(),
-  pageCount: Joi.number().required(),
-  readPage: Joi.number().default(1),
+  name: Joi.string()
+    .required()
+    .messages({
+      'any.required': 'Mohon isi nama buku',
+    }),
+  year: Joi.number()
+    .required()
+    .messages({
+      'any.required': 'Mohon isi tahun buku',
+    }),
+  author: Joi.string()
+    .required()
+    .messages({
+      'any.required': 'Mohon isi penulis buku',
+    }),
+  summary: Joi.string()
+    .required()
+    .messages({
+      'any.required': 'Mohon isi ringkasan buku',
+    }),
+  publisher: Joi.string()
+    .required()
+    .messages({
+      'any.required': 'Mohon isi penerbit buku',
+    }),
+  pageCount: Joi.number()
+    .required()
+    .messages({
+      'any.required': 'Mohon isi jumlah halaman buku',
+    }),
+  readPage: Joi.number()
+    .optional()
+    .max(Joi.ref('pageCount'))
+    .messages({
+      'any.required': 'Mohon isi halaman yang sedang dibaca',
+      'number.max': 'readPage tidak boleh lebih besar dari pageCount',
+    }),
   reading: Joi.boolean().default(false),
 });
 
-const getAll = () => JSONDB.read('books');
+const getAll = () => {
+  const books = JSONDB.read('books')
+    .map('name')
+    .value();
+  return books;
+};
 
 const create = (param) => {
   const book = {

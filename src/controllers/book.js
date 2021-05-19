@@ -8,7 +8,7 @@ const getAllBooks = {
     const payload = {
       status: 'success',
       message: 'Berhasil',
-      data: { books },
+      data: books,
     };
     return h.response(payload).code(200);
   },
@@ -20,12 +20,19 @@ const createBook = {
   options: {
     validate: {
       payload: Book.createBookParam,
-      failAction: (_request, h) => {
+      options: {
+        allowUnknown: true,
+        abortEarly: false,
+      },
+      failAction: (_request, h, err) => {
+        const firstError = err.details[0].message.replace(/['"]+/g, '');
         const payload = {
           status: 'fail',
-          message: 'Gagal menambahkan buku',
+          message: `Gagal menambahkan buku. ${firstError}`,
         };
-        return h.response(payload).code(400).takeover();
+        return h.response(payload)
+          .code(400)
+          .takeover();
       },
     },
   },
@@ -34,7 +41,7 @@ const createBook = {
     const book = Book.create(data);
     const payload = {
       status: 'success',
-      message: 'Berhasil',
+      message: 'Buku berhasil ditambahkan',
       data: { book },
     };
     return h.response(payload).code(200);
