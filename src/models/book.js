@@ -110,10 +110,15 @@ const updateById = (bookId, updateBookParam) => {
     .write();
 };
 
+const deleteById = (bookId) => JSONDB.get('books')
+  .remove({ id: bookId })
+  .write();
+
 module.exports = {
   Schema,
   getAll,
   find,
   create,
   updateById,
+  deleteById,
 };

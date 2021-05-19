@@ -104,9 +104,33 @@ const updateBook = {
   },
 };
 
+const deleteBook = {
+  method: 'DELETE',
+  path: '/books/{bookId}',
+  handler: (request, h) => {
+    const { bookId } = request.params;
+    const book = Book.find(bookId);
+    if (!book) {
+      const payload = {
+        status: 'fail',
+        message: 'Buku gagal dihapus. Id tidak ditemukan',
+      };
+      return h.response(payload).code(404);
+    }
+
+    Book.deleteById(bookId);
+    const payload = {
+      status: 'success',
+      message: 'Buku berhasil dihapus',
+    };
+    return h.response(payload).code(200);
+  },
+};
+
 module.exports = [
   getAllBooks,
   findBook,
   createBook,
   updateBook,
+  deleteBook,
 ];
