@@ -1,7 +1,8 @@
 const bookController = require('./controllers/book');
 
-function initAPIRoutes(server) {
+// API /books
+function registerBookRoutes(server) {
   server.route(bookController);
 }
 
-module.exports = initAPIRoutes;
+module.exports = registerBookRoutes;

@@ -3,59 +3,92 @@ const Joi = require('joi');
 
 const JSONDB = require('../database/json');
 
-const createBookParam = Joi.object({
+const Schema = Joi.object({
   name: Joi.string()
-    .required()
+    .alter({
+      create: (schema) => schema.required(),
+      update: (schema) => schema.optional(),
+    })
     .messages({
       'any.required': 'Mohon isi nama buku',
     }),
   year: Joi.number()
-    .required()
+    .alter({
+      create: (schema) => schema.required(),
+      update: (schema) => schema.optional(),
+    })
     .messages({
       'any.required': 'Mohon isi tahun buku',
     }),
   author: Joi.string()
-    .required()
+    .alter({
+      create: (schema) => schema.required(),
+      update: (schema) => schema.optional(),
+    })
     .messages({
       'any.required': 'Mohon isi penulis buku',
     }),
   summary: Joi.string()
-    .required()
+    .alter({
+      create: (schema) => schema.required(),
+      update: (schema) => schema.optional(),
+    })
     .messages({
       'any.required': 'Mohon isi ringkasan buku',
     }),
   publisher: Joi.string()
-    .required()
+    .alter({
+      create: (schema) => schema.required(),
+      update: (schema) => schema.optional(),
+    })
     .messages({
       'any.required': 'Mohon isi penerbit buku',
     }),
   pageCount: Joi.number()
-    .required()
+    .alter({
+      create: (schema) => schema.required(),
+      update: (schema) => schema.optional(),
+    })
     .messages({
       'any.required': 'Mohon isi jumlah halaman buku',
     }),
   readPage: Joi.number()
-    .optional()
+    .alter({
+      create: (schema) => schema.required(),
+      update: (schema) => schema.optional(),
+    })
     .max(Joi.ref('pageCount'))
     .messages({
       'any.required': 'Mohon isi halaman yang sedang dibaca',
       'number.max': 'readPage tidak boleh lebih besar dari pageCount',
     }),
-  reading: Joi.boolean().default(false),
+  reading: Joi.boolean()
+    .alter({
+      create: (schema) => schema.required(),
+      update: (schema) => schema.optional(),
+    })
+    .messages({
+      'any.required': 'Mohon isi status baca buku',
+    }),
 });
 
-const getAll = () => {
-  const books = JSONDB.read('books')
-    .map('name')
-    .value();
-  return books;
-};
+const getAll = () => JSONDB.get('books')
+  .map((book) => ({
+    id: book.id,
+    name: book.name,
+    publisher: book.publisher,
+  }))
+  .value();
 
-const create = (param) => {
+const find = (bookId) => JSONDB.get('books')
+  .find({ id: bookId })
+  .value();
+
+const create = (createBookParam) => {
   const book = {
-    ...param,
+    ...createBookParam,
     id: NanoID.nanoid(),
-    finished: param.readPage === param.pageCount,
+    finished: createBookParam.readPage === createBookParam.pageCount,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -66,7 +99,8 @@ const create = (param) => {
 };
 
 module.exports = {
-  createBookParam,
+  Schema,
   getAll,
+  find,
   create,
 };

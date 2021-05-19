@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const Hapi = require('@hapi/hapi');
 const appConfig = require('./config/app');
-const initAPIRoutes = require('./routes');
+const registerBookRoutes = require('./routes');
 
 const init = async () => {
   const server = Hapi.server({
@@ -9,7 +9,7 @@ const init = async () => {
     port: appConfig.port,
   });
 
-  initAPIRoutes(server);
+  registerBookRoutes(server);
 
   await server.start();
   console.log('Server running on %s', server.info.uri);

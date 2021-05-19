@@ -7,8 +7,29 @@ const getAllBooks = {
     const books = Book.getAll();
     const payload = {
       status: 'success',
-      message: 'Berhasil',
-      data: books,
+      data: { books },
+    };
+    return h.response(payload).code(200);
+  },
+};
+
+const findBook = {
+  method: 'GET',
+  path: '/books/{bookId}',
+  handler: (request, h) => {
+    const { bookId } = request.params;
+    const book = Book.find(bookId);
+    if (!book) {
+      const payload = {
+        status: 'fail',
+        message: 'Buku tidak ditemukan',
+      };
+      return h.response(payload).code(404);
+    }
+
+    const payload = {
+      status: 'success',
+      data: { book },
     };
     return h.response(payload).code(200);
   },
@@ -19,11 +40,7 @@ const createBook = {
   path: '/books',
   options: {
     validate: {
-      payload: Book.createBookParam,
-      options: {
-        allowUnknown: true,
-        abortEarly: false,
-      },
+      payload: Book.Schema.tailor('create'),
       failAction: (_request, h, err) => {
         const firstError = err.details[0].message.replace(/['"]+/g, '');
         const payload = {
@@ -42,13 +59,14 @@ const createBook = {
     const payload = {
       status: 'success',
       message: 'Buku berhasil ditambahkan',
-      data: { book },
+      data: { bookId: book.id },
     };
-    return h.response(payload).code(200);
+    return h.response(payload).code(201);
   },
 };
 
 module.exports = [
   getAllBooks,
+  findBook,
   createBook,
 ];
