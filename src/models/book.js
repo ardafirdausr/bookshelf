@@ -83,8 +83,10 @@ const Schema = Joi.object({
     }),
 });
 
-const getAll = (filters) => JSONDB.get('books')
-  .filter((book) => {
+const getAll = (filters = {}) => {
+  // shorthand: db.get(str).filter(func|obj).map(func).value()
+  const books = JSONDB.get('books').value();
+  const filteredBooks = books.filter((book) => {
     let isMatch = true;
     if (filters.name !== undefined) {
       const pattern = new RegExp(`.*${filters.name}.*`, 'i');
@@ -99,13 +101,14 @@ const getAll = (filters) => JSONDB.get('books')
       isMatch = isMatch && (book.finished === filters.finished);
     }
     return isMatch;
-  })
-  .map((book) => ({
+  });
+  const formatedBooks = filteredBooks.map((book) => ({
     id: book.id,
     name: book.name,
     publisher: book.publisher,
-  }))
-  .value();
+  }));
+  return formatedBooks;
+};
 
 const find = (bookId) => JSONDB.get('books')
   .find({ id: bookId })

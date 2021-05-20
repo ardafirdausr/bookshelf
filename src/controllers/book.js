@@ -134,10 +134,10 @@ const deleteBook = {
   },
 };
 
-module.exports = [
+module.exports = {
   getAllBooks,
   findBook,
   createBook,
   updateBook,
   deleteBook,
-];
+};
