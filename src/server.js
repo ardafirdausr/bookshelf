@@ -1,10 +1,11 @@
+/* eslint-disable func-names */
 /* eslint-disable no-console */
 const Hapi = require('@hapi/hapi');
 const appConfig = require('./config/app');
 const registerBookRoutes = require('./routes');
 
-const init = async () => {
-  const server = Hapi.server({
+function Server() {
+  this.server = Hapi.server({
     host: appConfig.host,
     port: appConfig.port,
     routes: {
@@ -12,15 +13,17 @@ const init = async () => {
     },
   });
 
-  registerBookRoutes(server);
+  registerBookRoutes(this.server);
+}
 
-  await server.start();
-  console.log('Server running on %s', server.info.uri);
+Server.prototype.start = async function () {
+  await this.server.start();
+  console.log('Server running on %s', this.server.info.uri);
 };
 
-process.on('unhandledRejection', (err) => {
-  console.log(err);
-  process.exit(1);
-});
+Server.prototype.stop = async function () {
+  await this.server.stop();
+  console.log('Server has been stopped');
+};
 
-init();
+module.exports = Server;
