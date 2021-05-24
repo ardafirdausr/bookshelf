@@ -62,6 +62,7 @@ beforeAll(async (done) => {
   BookShelf.server.events.on('start', () => {
     done();
   });
+  BookShelf.server.settings.port = 8000;
   BookShelf.start();
   await insertbooks();
 });

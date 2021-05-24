@@ -1,0 +1,11 @@
+language: node_js
+
+go:
+  - 14.15.x
+
+install:
+  - yarn install
+
+script:
+  - yarn run lint
+  - yarn run test
