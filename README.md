@@ -1,7 +1,7 @@
 <h1 align="center">BookShelf</h1>
 
 <p align="center">
-  <img src="https://travis-ci.org/ardafirdausr/dicoding-BMABEUP-bookshelf.svg?branch=main" alt="Build Status">    
+  <img src="https://travis-ci.com/ardafirdausr/dicoding-BMABEUP-bookshelf.svg?branch=main" alt="Build Status">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
 </p>
 
