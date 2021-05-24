@@ -1,6 +1,11 @@
-# Bookshelf
+<h1 align="center">BookShelf</h1>
 
-Submission for dicoding's Belajar Membuat Aplikasi Back-End untuk Pemula course
+<p align="center">
+  <img src="https://travis-ci.org/ardafirdausr/dicoding-BMABEUP-bookshelf.svg?branch=main" alt="Build Status">    
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
+</p>
+
+Submission for dicoding's [Belajar Membuat Aplikasi Back-End untuk Pemula](https://www.dicoding.com/academies/261) course
 
 ### Run The App
 1. Install app dependencies using `yarn install` or `npm install`
